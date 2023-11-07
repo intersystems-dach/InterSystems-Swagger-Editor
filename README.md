@@ -1,6 +1,6 @@
 <div align="center">
   <br />
-  <img src="dist/favicon-32x32.png" alt="InterSystemsSwaggerEditor" style="width:30%"/>
+  <img src="dist/favicon-32x32.png" alt="InterSystemsSwaggerEditor"/>
   <h1>InterSystems Swagger Editor</h1>
   <p>
      The <a href = "https://github.com/swagger-api/swagger-editor">Swagger Editor</a> optimized for InterSystems IRIS.
