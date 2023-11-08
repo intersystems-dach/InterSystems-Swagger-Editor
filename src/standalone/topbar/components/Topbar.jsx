@@ -16,6 +16,8 @@ import { method } from "lodash"
 
 export default class Topbar extends React.Component {
 
+  // NOTICE: CHANGES
+
    host = "localhost"
    port = "52773"
    namespace = ""
@@ -23,6 +25,7 @@ export default class Topbar extends React.Component {
    username = "_system"
    password = ""
 
+  // NOTICE: CHANGES
 
    irisPostCall = async (title, body, url, header) => {
     await fetch(url, {
@@ -49,30 +52,37 @@ export default class Topbar extends React.Component {
       definitionVersion: "Unknown"
     }
   }
+  // NOTICE: CHANGES
 
   setIRISHost = (host) => {
     this.host = host
   }
+  // NOTICE: CHANGES
 
   setIRISPort = (port) => {
     this.port = port
   }
+  // NOTICE: CHANGES
 
   setIRISNamespace = (namespace) => {
     this.namespace = namespace
   }
+  // NOTICE: CHANGES
 
   setIRISWebApp = (webapp) => {
     this.webapp = webapp
   }
+  // NOTICE: CHANGES
 
   setIRISUsername = (username) => {
     this.username = username
   }
+  // NOTICE: CHANGES
 
   setIRISPassword = (password) => {
     this.password = password
   }
+  // NOTICE: CHANGES
 
   updateIRISSpec = () => {
     let json = this.getAsJson()
@@ -210,6 +220,8 @@ export default class Topbar extends React.Component {
     return prettyJsonContent
   }
 
+  // NOTICE: CHANGES
+
   saveAsJson = () => {
     //this.downloadFile(prettyJsonContent, `${fileName}.json`)
     navigator.clipboard.writeText(this.getAsJson())
@@ -340,7 +352,7 @@ export default class Topbar extends React.Component {
     return "openapi"
   }
 
-  
+
 
   getDefinitionLanguage = () => {
     let editorContent = this.props.specSelectors.specStr() || ""
@@ -383,6 +395,8 @@ export default class Topbar extends React.Component {
     }
   }
 
+  // NOTICE: CHANGES
+
   downloadAngularService = () =>{
     let json = JSON.parse(this.getAsJson())
     let title = json.info.title
@@ -402,10 +416,10 @@ import { Observable, catchError } from 'rxjs';
   if(json.info.description){
     text += "\n// " + json.info.description
   }
-  text += 
+  text +=
 `
 export class ${title.replace(/\s/g,"")}Service {
-  
+
   private host: string = 'localhost';
   private port: number = 52773;
   private webApp: string = '';
@@ -444,7 +458,7 @@ export class ${title.replace(/\s/g,"")}Service {
         for(let responseCode in path.responses){
           if(responseCode == "200"){
             continue
-          } 
+          }
           errorHandling += "\n      if(err.status === " + responseCode + "){\n        throw new Error('" + path.responses[responseCode].description + "')\n      }"
           methodComment += "  * @throws " + responseCode + " " + path.responses[responseCode].description + "\n"
         }
@@ -500,6 +514,7 @@ export class ${title.replace(/\s/g,"")}Service {
         toggle: <span className="menu-item" onClick={toggleFn}>{ name }</span>
       }
     }
+  // NOTICE: CHANGES
 
     return (
       <div className="swagger-editor-standalone">
