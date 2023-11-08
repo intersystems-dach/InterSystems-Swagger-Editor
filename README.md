@@ -1,6 +1,6 @@
 <div align="center">
   <br />
-  <img src="dist/favicon-32x32.png" alt="InterSystemsSwaggerEditor" />
+  <img src="dist/favicon-32x32.png" alt="InterSystemsSwaggerEditor"/>
   <h1>InterSystems Swagger Editor</h1>
   <p>
      The <a href = "https://github.com/swagger-api/swagger-editor">Swagger Editor</a> optimized for InterSystems IRIS.
@@ -37,3 +37,5 @@
 - As Angular Service - Go to `Export` and click `Export as Angular Service` and a typescript file will be downloaded
 
 ---
+
+_This application is not supported by InterSystems Corporation. Please be notified that you use it at your own responsibility_
