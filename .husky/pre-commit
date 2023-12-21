@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+if [ !npm run build ]; then
+  echo "Build exited with code 1"
+fi
+
+git add .
