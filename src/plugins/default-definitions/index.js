@@ -8,7 +8,7 @@ info:
     That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
 
     _If you're looking for the Swagger 2.0/OAS 2.0 version of Petstore, then click [here](https://editor.swagger.io/?url=https://petstore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the \`Edit > Load Petstore OAS 2.0\` menu option!_
-    
+
     Some useful links:
     - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
     - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
@@ -64,7 +64,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'          
+                $ref: '#/components/schemas/Pet'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Pet'
@@ -103,7 +103,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'          
+                $ref: '#/components/schemas/Pet'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Pet'
@@ -141,7 +141,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'          
+                  $ref: '#/components/schemas/Pet'
             application/xml:
               schema:
                 type: array
@@ -178,7 +178,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Pet'          
+                  $ref: '#/components/schemas/Pet'
             application/xml:
               schema:
                 type: array
@@ -211,7 +211,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'          
+                $ref: '#/components/schemas/Pet'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Pet'
@@ -387,7 +387,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'          
+                $ref: '#/components/schemas/Order'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Order'
@@ -463,7 +463,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
+                $ref: '#/components/schemas/User'
             application/xml:
               schema:
                 $ref: '#/components/schemas/User'
@@ -543,7 +543,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'          
+                $ref: '#/components/schemas/User'
             application/xml:
               schema:
                 $ref: '#/components/schemas/User'
@@ -1507,3 +1507,226 @@ definitions:
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"`
+
+
+// NOTICE: CHANGES
+
+export const irisMathExample = `swagger: '2.0'
+info:
+  description: Math by Eduard Lebedyuk (View on DC https://community.intersystems.com/post/developing-rest-api-spec-first-approach)
+  version: 1.0.0
+  title: Math REST API
+host: localhost:52773
+basePath: /math
+schemes:
+  - http
+paths:
+  /random/{min}/{max}:
+    get:
+      x-ISC_CORS: true
+      summary: Get random integer
+      description: Get random integer between min and max
+      operationId: getRandom
+      produces:
+        - application/json
+      parameters:
+        - name: min
+          in: path
+          description: Minimal Integer
+          required: true
+          type: integer
+          format: int32
+        - name: max
+          in: path
+          description: Maximal Integer
+          required: true
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+
+
+`
+
+// NOTICE: CHANGES
+
+export const irisLibraryExample= `swagger: '2.0'
+info:
+  description: An API for Library Management using InterSystems IRIS
+  version: 1.0.0
+  title: Library Book
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+schemes:
+  - https
+paths:
+  /addbook:
+    post:
+      description: Add a new book
+      operationId: AddingBook
+      x-ISC_CORS: true
+      produces:
+        - application/json
+      parameters:
+        - name: title
+          in: query
+          type: string
+        - name: author
+          in: query
+          type: string
+        - name: genre
+          in: query
+          type: integer
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /addfriend:
+    post:
+      description: Add a new friend
+      operationId: AddingFriend
+      x-ISC_CORS: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /findabook/{bookid}:
+    get:
+      description: Find a book
+      operationId: FindingBook
+      produces:
+        - application/json
+      parameters:
+        - name: bookid
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /findaperson/{personid}:
+    get:
+      description: Find a person
+      operationId: Findingperson
+      produces:
+        - application/json
+      parameters:
+        - name: personid
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /getallbook:
+    get:
+      description: list of all the books
+      operationId: GetAllBooks
+      x-ISC_CORS: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /getallperson:
+    get:
+      description: list of all the people
+      operationId: GetAllPerson
+      x-ISC_CORS: true
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /loanbook:
+    post:
+      description: loan a book to a friend
+      operationId: LoanBook
+      x-ISC_CORS: true
+      produces:
+        - application/json
+      parameters:
+        - name: Bookid
+          in: query
+          type: string
+        - name: FriendsName
+          in: query
+          type: string
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /returnbook/{bookid}:
+    post:
+      description: return a book from a friend
+      operationId: ReturnBook
+      x-ISC_CORS: true
+      produces:
+        - application/json
+      parameters:
+        - name: bookid
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /loanedbooks:
+    get:
+      description: list of all the loaned books
+      operationId: loanedBooks
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /removebook:
+    post:
+      description: remove a book
+      operationId: RemoveBook
+      produces:
+        - application/json
+      parameters:
+        - name: Bookid
+          in: query
+          type: string
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+  /removeperson:
+    post:
+      description: remove a person
+      operationId: RemovePerson
+      produces:
+        - application/json
+      parameters:
+        - name: Personid
+          in: query
+          type: string
+      responses:
+        '200':
+          description: Success
+        '500':
+          description: Server error
+`

@@ -36,7 +36,6 @@ export default class ImportFileMenuItem extends Component {
 
   importFromInput = async () => {
     const { onDocumentLoad } = this.props
-    console.log(this.input)
       try {
         const preparedContent = isJsonObject(this.input) ? YAML.dump(YAML.load(this.input)) : this.input
 
@@ -46,23 +45,30 @@ export default class ImportFileMenuItem extends Component {
       } catch(e) {
         alert(`Oof! There was an error loading your document:\n\n${e.message || e}`)
       }
-    
+
   }
 
   setInput = (input) => {
     this.input = input
   }
-  
+
   render() {
     return <div>
       <li>
       <button type="button" onClick={this.onClick}>Import file</button>
     </li>
     <li>
-      <textarea placeholder={"Paste from clipboard"} onChange={event => {this.setInput( event.target.value)}}></textarea>
+      {
+        // NOTICE: CHANGES
+      }
+      <textarea placeholder="Import from clipboard" onChange={event => {this.setInput( event.target.value)}}
+      style={{ width: "100%", height: "50px"
+    , borderBottom: "none"
+    }}
+      ></textarea>
     </li>
     <li>
-      <button type="button" onClick={this.importFromInput}>Import from above</button>
+      <button type="button" onClick={this.importFromInput}>Submit</button>
     </li>
       </div>
   }

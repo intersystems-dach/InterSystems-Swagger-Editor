@@ -8,7 +8,8 @@ import DropdownMenu from "./DropdownMenu"
 import fileDownload from "js-file-download"
 import YAML from "js-yaml"
 import beautifyJson from "json-beautify"
-import { petStoreOas2Def, petStoreOas3Def } from "../../../plugins/default-definitions"
+// NOTICE: CHANGES
+import { petStoreOas2Def, petStoreOas3Def, irisMathExample, irisLibraryExample } from "../../../plugins/default-definitions"
 
 
 import Logo from "../assets/logo_small.svg"
@@ -18,12 +19,14 @@ export default class Topbar extends React.Component {
 
   // NOTICE: CHANGES
 
-   host = "localhost"
-   port = "52773"
-   namespace = ""
-   webapp = ""
-   username = "_system"
-   password = ""
+   host = localStorage.getItem("irisHost") || "localhost"
+   port = localStorage.getItem("irisPort") || "52773"
+   namespace = localStorage.getItem("irisNamespace") || "USER"
+   webapp = localStorage.getItem("irisWebApp") || ""
+   username = localStorage.getItem("irisUsername") || ""
+   password = localStorage.getItem("irisPassword") || ""
+
+
 
   // NOTICE: CHANGES
 
@@ -35,10 +38,13 @@ export default class Topbar extends React.Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      alert(data.msg)
+      alert(
+        data.msg)
     })
     .catch((err) => {
-      alert(err.message)
+      alert(
+        "Error: " +
+        err.message)
     })
     }
 
@@ -56,42 +62,126 @@ export default class Topbar extends React.Component {
 
   setIRISHost = (host) => {
     this.host = host
+    localStorage.setItem("irisHost", host)
   }
   // NOTICE: CHANGES
 
   setIRISPort = (port) => {
     this.port = port
+    localStorage.setItem("irisPort", port)
   }
   // NOTICE: CHANGES
 
   setIRISNamespace = (namespace) => {
     this.namespace = namespace
+    localStorage.setItem("irisNamespace", namespace)
   }
   // NOTICE: CHANGES
 
   setIRISWebApp = (webapp) => {
     this.webapp = webapp
+    localStorage.setItem("irisWebApp", webapp)
   }
   // NOTICE: CHANGES
 
   setIRISUsername = (username) => {
     this.username = username
+    localStorage.setItem("irisUsername", username)
   }
   // NOTICE: CHANGES
 
   setIRISPassword = (password) => {
     this.password = password
+    localStorage.setItem("irisPassword", password)
   }
   // NOTICE: CHANGES
 
   updateIRISSpec = () => {
+    if(this.host == "" || this.port == "" || this.namespace == "" || this.webapp == ""){
+      alert("Please fill out all fields")
+      return
+    }
     let json = this.getAsJson()
-    console.log(json)
     let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + this.namespace + "/" + this.webapp
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
     header.append("Content-type", "application/json; charset=UTF-8")
     this.irisPostCall("", json, url, header)
+
+  }
+
+   loadIRISSpec = () => {
+    if(this.host == "" || this.port == "" ){
+      alert("Please fill out host and port")
+      return
+    }
+    if(this.webapp == ""){
+      this.listIRISWebapps()
+      return
+    }
+    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + this.namespace + "/" + this.webapp
+    let header = new Headers()
+    header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
+    header.append("Content-type", "application/json; charset=UTF-8")
+    console.log(url)
+     fetch(url, {
+    method: "GET",
+    headers: header,
+    })
+    .then((response) => {
+      if (response.status == 404){
+        alert("Webapplication "+this.webapp+" not found!\n Run again with empty Webapplication field to list all webapplications.")
+        return undefined
+      }
+      return response.json()
+    })
+    .then((data) => {
+      if (!data){
+        return
+      }
+    this.props.specActions.updateSpec(YAML.dump(data))
+
+    })
+    .catch((err) => {
+      alert(
+        "Error: " +
+        err.message)
+    })
+
+  }
+
+   listIRISWebapps = () => {
+    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + (this.namespace === "" ? "":this.namespace + "/")
+    let header = new Headers()
+    header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
+    header.append("Content-type", "application/json; charset=UTF-8")
+    console.log(url)
+     fetch(url, {
+    method: "GET",
+    headers: header,
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      let list = ""
+      if (this.namespace !== ""){
+        data.forEach(element => {
+          list += element.name + "\n"
+        })
+        alert("Webapplications in namespace " + this.namespace + ":\n" + list)
+        return
+      }
+      data.forEach(element => {
+        list += element.namespace + " | " + element.name + "\n"
+      })
+      alert("Webapplications:\n" + list)
+    })
+    .catch((err) => {
+      alert(
+        "Error: " +
+        err.message)
+    })
 
   }
 
@@ -320,6 +410,15 @@ export default class Topbar extends React.Component {
     this.props.specActions.updateSpec(petStoreOas2Def)
   }
 
+  // NOTICE: CHANGES
+  loadIRISMathExample = () => {
+    this.props.specActions.updateSpec(irisMathExample)
+  }
+  // NOTICE: CHANGES
+  loadIRISLibraryExample = () => {
+    this.props.specActions.updateSpec(irisLibraryExample)
+  }
+
   loadPetStoreOas3 = () => {
     this.props.specActions.updateSpec(petStoreOas3Def)
   }
@@ -477,6 +576,29 @@ export class ${title.replace(/\s/g,"")}Service {
     this.downloadFile(text, title.replace(/\s/g,"-").toLowerCase()+".service.ts")
   }
 
+  // NOTICE: CHANGES
+
+  inputStyle = {
+    border: "none",
+    color: "black",
+    padding: "5px",
+    outline: "none",
+    fontSize: "16px",
+    borderBottom: "1px solid #00b6b0",
+    paddingBottom: "10px",
+
+  }
+
+  labelStyle = {
+    color: "black",
+    fontSize: "12px",
+    fontWeight: "bold",
+    marginBottom: "3px",
+    paddingLeft: "5px",
+    opacity: "0.5"
+
+  }
+
   render() {
     let { getComponent, specSelectors, topbarActions } = this.props
     const Link = getComponent("Link")
@@ -547,6 +669,8 @@ export class ${title.replace(/\s/g,"")}Service {
               <li role="separator"></li>
               <li><button type="button" onClick={this.loadPetStoreOas3}>Load Petstore OAS 3.0</button></li>
               <li><button type="button" onClick={this.loadPetStoreOas2}>Load Petstore OAS 2.0</button></li>
+              <li><button type="button" onClick={this.loadIRISMathExample}>Load IRIS Math Example</button></li>
+              <li><button type="button" onClick={this.loadIRISLibraryExample}>Load IRIS Library Example</button></li>
             </DropdownMenu>
             <TopbarInsert {...this.props} />
             { showServersMenu ? <DropdownMenu className="long" {...makeMenuOptions("Generate Server")}>
@@ -559,17 +683,53 @@ export class ${title.replace(/\s/g,"")}Service {
             </DropdownMenu> : null }
             {AboutMenu && <AboutMenu {...makeMenuOptions("About")} />}
             <DropdownMenu {...makeMenuOptionsWithoutAutomaticClose("IRIS")}>
-                  <input defaultValue={this.host} type="text" placeholder="Host" style={{color: "black"}} onChange={event => {this.setIRISHost( event.target.value)}}></input>
-                  <input defaultValue={this.port} type="text" placeholder="Port" style={{color: "black"}} onChange={event => {this.setIRISPort( event.target.value)}}></input>
-                  <input defaultValue={this.namespace} type="text" placeholder="Namespace" style={{color: "black"}} onChange={event => {this.setIRISNamespace( event.target.value)}}></input>
-                  <input defaultValue={this.webapp} type="text" placeholder="Webapp" style={{color: "black"}} onChange={event => {this.setIRISWebApp( event.target.value)}}></input>
-                  <input defaultValue={this.username} type="text" placeholder="Username" style={{color: "black"}} onChange={event => {this.setIRISUsername( event.target.value)}}></input>
-                  <input defaultValue={this.password} type="password" placeholder="Password" style={{color: "black"}} onChange={event => {this.setIRISPassword( event.target.value)}}></input>
-                  <button type="button" style={{cursor: "pointer", background: "#00b6b0", border: "none", width: "100%", height: "30px"}} onClick={this.updateIRISSpec} >Update IRIS Specs</button>
+              <label style={this.labelStyle}>
+                Host
+              </label>
+                  <input defaultValue={this.host} type="text" placeholder="Host" style={this.inputStyle} onChange={event => {this.setIRISHost( event.target.value)}}></input>
+              <label style={this.labelStyle}>
+                Port
+              </label>
+                  <input defaultValue={this.port} type="text" placeholder="Port" style={this.inputStyle} onChange={event => {this.setIRISPort( event.target.value)}}></input>
+              <label style={this.labelStyle}>
+                Namespace
+              </label>
+                  <input defaultValue={this.namespace} type="text" placeholder="Namespace" style={this.inputStyle} onChange={event => {this.setIRISNamespace( event.target.value)}}></input>
+              <label style={this.labelStyle}>
+                Webapplication
+              </label>
+                  <input defaultValue={this.webapp} type="text" placeholder="Webapp" style={this.inputStyle} onChange={event => {this.setIRISWebApp( event.target.value)}}></input>
+              <label style={this.labelStyle}>
+                Username
+              </label>
+                  <input defaultValue={this.username} type="text" placeholder="Username" style={this.inputStyle} onChange={event => {this.setIRISUsername( event.target.value)}}></input>
+              <label style={this.labelStyle}>
+                Password
+              </label>
+                  <input defaultValue={this.password} type="password" placeholder="Password" style={this.inputStyle} onChange={event => {this.setIRISPassword( event.target.value)}}></input>
+                  <button type="button" style={{cursor: "pointer", background: "#00b6b0", border: "1px solid black", width: "100%", height: "30px", padding: "5px"}} onClick={this.loadIRISSpec} >Load IRIS specification</button>
+                  <button type="button" style={{cursor: "pointer", background: "#00b6b0", border: "1px solid black", width: "100%", height: "30px", padding: "5px"}} onClick={this.updateIRISSpec} >Update IRIS specification</button>
             </DropdownMenu>
             <DropdownMenu {...makeMenuOptions("Export")}>
                   <button type="button" style={{cursor: "pointer", border: "none", width: "120px", height: "50px"}} onClick={this.downloadAngularService} >Export as Angular Service (BETA)</button>
             </DropdownMenu>
+            <a target="_blank" href="https://github.com/intersystems-dach/InterSystems-Swagger-Editor" rel="noreferrer" style={
+              {
+                textDecoration: "none",
+                fontSize: "14px",
+              }
+            }>
+              View on GitHub
+            </a>
+            <a target="_blank" href="https://philipp-bonin.com/" rel="noreferrer" style={
+              {
+                textDecoration: "none",
+                fontSize: "10px",
+                opacity: "0.03"
+              }
+            }>
+              Philipp was here
+            </a>
           </div>
         </div>
       </div>
