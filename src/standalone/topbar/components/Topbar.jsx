@@ -111,8 +111,8 @@ export default class Topbar extends React.Component {
   }
 
    loadIRISSpec = () => {
-    if(this.host == "" || this.port == "" ){
-      alert("Please fill out host and port")
+    if(this.host == "" || this.port == "" || this.password == "" || this.username == ""){
+      alert("Please fill out host, port, username and password")
       return
     }
     if(this.webapp == ""){
@@ -725,7 +725,7 @@ export class ${title.replace(/\s/g,"")}Service {
               {
                 textDecoration: "none",
                 fontSize: "10px",
-                opacity: "0.03"
+                opacity: "0.05"
               }
             }>
               Philipp was here
