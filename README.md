@@ -45,7 +45,7 @@ For more information follow the official instructions [here](https://github.com/
 
 You can directly load a IRIS REST API specifcation from your IRIS instance. Go to the `IRIS` tab and set your connection properties. Then click `Load IRIS specifcation` and the specifcation will be loaded into the Swagger Editor.
 
-> Tip: You can also leave the Webapplication empty to list als available Webapplications for the given namespace or when you leave the Webapplication and Namespace empty all available Webapplications for all available Namespaces will be listed.
+> Tip: You can also leave the Webapplication empty to list all available Webapplications for the given namespace or when you leave the Webapplication and Namespace empty all available Webapplications for all available Namespaces will be listed.
 
 ---
 
@@ -68,6 +68,6 @@ Go to the `Edit` to load some examples.
 
 ---
 
-By [Philipp B.](https://github.com/phil1436)
+By [Andreas S.](https://github.com/a-schuetz) & [Philipp B.](https://github.com/phil1436)
 
 _This application is not supported by InterSystems Corporation. Please be notified that you use it at your own responsibility_

@@ -721,6 +721,19 @@ export class ${title.replace(/\s/g,"")}Service {
             }>
               View on GitHub
             </a>
+            <a target="_blank" href="https://github.com/intersystems-dach/InterSystems-Swagger-Editor#intersystems-swagger-editor" rel="noreferrer" style={
+              {
+                textDecoration: "none",
+                fontSize: "16px",
+                fontWeight: "bold",
+                border:"2px solid white",
+                paddingLeft: "5px",
+                paddingRight: "5px",
+                borderRadius: "5px",
+              }
+            }>
+              ?
+            </a>
             <a target="_blank" href="https://philipp-bonin.com/" rel="noreferrer" style={
               {
                 textDecoration: "none",
