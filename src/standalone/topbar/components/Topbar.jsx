@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import React from "react"
+import React, { useState } from "react"
 import PropTypes from "prop-types"
 import Swagger from "swagger-client"
 import URL from "url"
@@ -11,7 +11,6 @@ import beautifyJson from "json-beautify"
 // NOTICE: CHANGES
 import { petStoreOas2Def, petStoreOas3Def, irisMathExample, irisLibraryExample } from "../../../plugins/default-definitions"
 
-
 import Logo from "../assets/logo_small.svg"
 import { method } from "lodash"
 
@@ -19,14 +18,15 @@ export default class Topbar extends React.Component {
 
   // NOTICE: CHANGES
 
-   host = localStorage.getItem("irisHost") || "localhost"
-   port = localStorage.getItem("irisPort") || "52773"
-   namespace = localStorage.getItem("irisNamespace") || "USER"
-   webapp = localStorage.getItem("irisWebApp") || ""
-   username = localStorage.getItem("irisUsername") || ""
-   password = localStorage.getItem("irisPassword") || ""
-
-
+  host = localStorage.getItem("irisHost") || "localhost"
+  port = localStorage.getItem("irisPort") || "52773"
+  namespace = localStorage.getItem("irisNamespace") || ""
+  webapp = localStorage.getItem("irisWebApp") || ""
+  username = localStorage.getItem("irisUsername") || ""
+  password = localStorage.getItem("irisPassword") || ""
+  connectedIRIS = localStorage.getItem("connectedIRIS") == "true" ? true : false
+  webapps = []
+  createNewApp = localStorage.getItem("createNewApp") == "true" ? true : false
 
   // NOTICE: CHANGES
 
@@ -58,44 +58,71 @@ export default class Topbar extends React.Component {
       definitionVersion: "Unknown"
     }
   }
-  // NOTICE: CHANGES
 
+  // NOTICE: CHANGES
   setIRISHost = (host) => {
     this.host = host
     localStorage.setItem("irisHost", host)
-  }
-  // NOTICE: CHANGES
+    this.connectedIRIS = false
+    localStorage.setItem("connectedIRIS", false)
+    this.webapps = []
+    this.setState({})
 
+  }
+
+  // NOTICE: CHANGES
   setIRISPort = (port) => {
     this.port = port
     localStorage.setItem("irisPort", port)
-  }
-  // NOTICE: CHANGES
+    this.connectedIRIS = false
+    localStorage.setItem("connectedIRIS", false)
+    this.webapps = []
+    this.setState({})
 
+  }
+
+  // NOTICE: CHANGES
   setIRISNamespace = (namespace) => {
     this.namespace = namespace
     localStorage.setItem("irisNamespace", namespace)
+    this.setState({})
   }
-  // NOTICE: CHANGES
 
+  setCreateNewApp = (status) => {
+    this.createNewApp = status
+    localStorage.setItem("createNewApp", status)
+    this.setState({})
+  }
+
+  // NOTICE: CHANGES
   setIRISWebApp = (webapp) => {
     this.webapp = webapp
     localStorage.setItem("irisWebApp", webapp)
+    this.setState({})
   }
-  // NOTICE: CHANGES
 
+  // NOTICE: CHANGES
   setIRISUsername = (username) => {
     this.username = username
     localStorage.setItem("irisUsername", username)
-  }
-  // NOTICE: CHANGES
+    this.connectedIRIS = false
+    localStorage.setItem("connectedIRIS", false)
+    this.webapps = []
+    this.setState({})
 
+  }
+
+  // NOTICE: CHANGES
   setIRISPassword = (password) => {
     this.password = password
     localStorage.setItem("irisPassword", password)
+    this.connectedIRIS = false
+    localStorage.setItem("connectedIRIS", false)
+    this.webapps = []
+    this.setState({})
   }
-  // NOTICE: CHANGES
 
+  // NOTICE: CHANGES
   updateIRISSpec = () => {
     if(this.host == "" || this.port == "" || this.namespace == "" || this.webapp == ""){
       alert("Please fill out all fields")
@@ -110,7 +137,7 @@ export default class Topbar extends React.Component {
 
   }
 
-   loadIRISSpec = () => {
+  loadIRISSpec = () => {
     if(this.host == "" || this.port == "" || this.password == "" || this.username == ""){
       alert("Please fill out host, port, username and password")
       return
@@ -123,7 +150,6 @@ export default class Topbar extends React.Component {
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
     header.append("Content-type", "application/json; charset=UTF-8")
-    console.log(url)
      fetch(url, {
     method: "GET",
     headers: header,
@@ -150,7 +176,66 @@ export default class Topbar extends React.Component {
 
   }
 
-   listIRISWebapps = () => {
+  connectToIris = () => {
+    if(this.host == "" || this.port == ""){
+      alert("Please fill out host and port")
+      return
+    }
+
+    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/"
+    let header = new Headers()
+    header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
+    header.append("Content-type", "application/json; charset=UTF-8")
+
+    fetch(url, {
+    method: "GET",
+    headers: header,
+    })
+    .then((response) => {
+      if (response.status == 401){
+        alert("Wrong username or password")
+        this.connectedIRIS = false
+        localStorage.setItem("connectedIRIS", false)
+        this.webapps = []
+        this.setState({})
+
+        return undefined
+      }
+      return response.json()
+    })
+    .then((data) => {
+      if (!data){
+        return
+      }
+      this.webapps = []
+      data.forEach(element => {
+        this.webapps.push( {
+          name: element.name,
+          namespace: element.namespace
+        })
+      })
+      this.connectedIRIS = true
+      localStorage.setItem("connectedIRIS", true)
+      if(this.webapp == ""){
+        this.createNewApp = true
+        localStorage.setItem("createNewApp", true)
+      }
+      this.setState({})
+    })
+    .catch((err) => {
+      alert(
+        "Error getting webapps: " +
+        err.message)
+        this.connectedIRIS = false
+        localStorage.setItem("connectedIRIS", false)
+        this.webapps = []
+        this.setState({})
+    })
+
+
+  }
+
+   istIRISWebapps = () => {
     let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + (this.namespace === "" ? "":this.namespace + "/")
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
@@ -476,6 +561,9 @@ export default class Topbar extends React.Component {
 
   componentDidMount() {
     this.instantiateGeneratorClient()
+    if(this.connectedIRIS){
+      this.connectToIris()
+    }
   }
 
   componentDidUpdate() {
@@ -686,29 +774,72 @@ export class ${title.replace(/\s/g,"")}Service {
               <label style={this.labelStyle}>
                 Host
               </label>
-                  <input defaultValue={this.host} type="text" placeholder="Host" style={this.inputStyle} onChange={event => {this.setIRISHost( event.target.value)}}></input>
+              <input defaultValue={this.host} type="text" placeholder="Host" style={this.inputStyle} onChange={event => {this.setIRISHost( event.target.value)}}></input>
               <label style={this.labelStyle}>
                 Port
               </label>
-                  <input defaultValue={this.port} type="text" placeholder="Port" style={this.inputStyle} onChange={event => {this.setIRISPort( event.target.value)}}></input>
-              <label style={this.labelStyle}>
-                Namespace
-              </label>
-                  <input defaultValue={this.namespace} type="text" placeholder="Namespace" style={this.inputStyle} onChange={event => {this.setIRISNamespace( event.target.value)}}></input>
-              <label style={this.labelStyle}>
-                Webapplication
-              </label>
-                  <input defaultValue={this.webapp} type="text" placeholder="Webapp" style={this.inputStyle} onChange={event => {this.setIRISWebApp( event.target.value)}}></input>
+              <input defaultValue={this.port} type="text" placeholder="Port" style={this.inputStyle} onChange={event => {this.setIRISPort( event.target.value)}}></input>
               <label style={this.labelStyle}>
                 Username
               </label>
-                  <input defaultValue={this.username} type="text" placeholder="Username" style={this.inputStyle} onChange={event => {this.setIRISUsername( event.target.value)}}></input>
+              <input defaultValue={this.username} type="text" placeholder="Username" style={this.inputStyle} onChange={event => {this.setIRISUsername( event.target.value)}}></input>
               <label style={this.labelStyle}>
                 Password
               </label>
-                  <input defaultValue={this.password} type="password" placeholder="Password" style={this.inputStyle} onChange={event => {this.setIRISPassword( event.target.value)}}></input>
-                  <button type="button" style={{cursor: "pointer", background: "#00b6b0", border: "1px solid black", width: "100%", height: "30px", padding: "5px"}} onClick={this.loadIRISSpec} >Load IRIS specification</button>
-                  <button type="button" style={{cursor: "pointer", background: "#00b6b0", border: "1px solid black", width: "100%", height: "30px", padding: "5px"}} onClick={this.updateIRISSpec} >Update IRIS specification</button>
+              <input defaultValue={this.password} type="password" placeholder="Password" style={this.inputStyle} onChange={event => {this.setIRISPassword( event.target.value)}}></input>
+              <button type="button" className="iris-btn" onClick={this.connectToIris}
+              style={
+                {
+                  backgroundColor: this.connectedIRIS ? "green" : "#ff0000",
+                }
+              }
+              >
+                {
+                  this.connectedIRIS ? "Connected!" : "Connect..."
+                }
+              </button>
+
+              {
+                this.connectedIRIS &&
+                <>
+                  <select className="dd-iris-webapp"
+                  >
+                    <option value="createNew" key="createNew"
+                    onClick={() => {this.setIRISWebApp(""); this.setIRISNamespace(""); this.setCreateNewApp(true)}}
+                    >Create New...</option>
+                    {
+                      this.webapps.map((item, i) => <option key={item.namespace + " | " + item.name} value={item.namespace + " | " + item.name}
+                      onClick={() => {this.setIRISWebApp(item.name); this.setIRISNamespace(item.namespace); this.setCreateNewApp(false)}}
+                      {...(this.webapp == item.name && this.namespace == item.namespace ? {selected: true}: {})}
+                      >{item.namespace + " | " + item.name}</option>)
+                    }
+                  </select>
+                  {
+                    this.createNewApp ?
+                    <>
+                      <label style={this.labelStyle}>
+                        Namespace
+                      </label>
+                      <input defaultValue={this.namespace} type="text" placeholder="Namespace" style={this.inputStyle} onChange={event => {this.setIRISNamespace( event.target.value)}}></input>
+                      <label style={this.labelStyle}>
+                        Webapplication
+                      </label>
+                      <input defaultValue={this.webapp} type="text" placeholder="Webapplication" style={this.inputStyle} onChange={event => {this.setIRISWebApp( event.target.value)}}></input>
+                      <button type="button" className="iris-btn" onClick={ () =>{
+                        this.updateIRISSpec()
+                        this.setCreateNewApp(false)
+                        this.connectToIris()
+                      }}
+                      >Create new Webapp</button>
+                    </>
+                    :
+                    <>
+                    <button type="button" className="iris-btn" onClick={this.loadIRISSpec} >Load IRIS specification</button>
+                    <button type="button" className="iris-btn" onClick={this.updateIRISSpec} >Update IRIS specification</button>
+                  </>
+                  }
+                </>
+            }
             </DropdownMenu>
             <DropdownMenu {...makeMenuOptions("Export")}>
                   <button type="button" style={{cursor: "pointer", border: "none", width: "120px", height: "50px"}} onClick={this.downloadAngularService} >Export as Angular Service (BETA)</button>
@@ -721,18 +852,8 @@ export class ${title.replace(/\s/g,"")}Service {
             }>
               View on GitHub
             </a>
-            <a target="_blank" href="https://github.com/intersystems-dach/InterSystems-Swagger-Editor#intersystems-swagger-editor" rel="noreferrer" style={
-              {
-                textDecoration: "none",
-                fontSize: "16px",
-                fontWeight: "bold",
-                border:"2px solid white",
-                paddingLeft: "5px",
-                paddingRight: "5px",
-                borderRadius: "5px",
-              }
-            }>
-              ?
+            <a target="_blank" href="https://github.com/intersystems-dach/InterSystems-Swagger-Editor#intersystems-swagger-editor" rel="noreferrer" className="help">
+              Help
             </a>
             <a target="_blank" href="https://philipp-bonin.com/" rel="noreferrer" style={
               {

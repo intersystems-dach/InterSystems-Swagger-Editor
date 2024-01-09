@@ -13,8 +13,9 @@
 
 * [Swagger Editor](#swagger-editor)
 * [Local Installation ](#local-installation-)
-* [Load a IRIS REST API Specifcation](#load-a-iris-rest-api-specifcation)
-* [Update a IRIS REST API Specifcation](#update-a-iris-rest-api-specifcation)
+* [Connect to IRIS](#connect-to-iris)
+* [Create a new IRIS REST API](#create-a-new-iris-rest-api)
+* [Load and Update a IRIS REST API Specifcation](#load-and-update-a-iris-rest-api-specifcation)
 * [Export](#export)
 * [Examples](#examples)
 
@@ -41,19 +42,27 @@ For more information follow the official instructions [here](https://github.com/
 
 ---
 
-## Load a IRIS REST API Specifcation
+## Connect to IRIS
 
-You can directly load a IRIS REST API specifcation from your IRIS instance. Go to the `IRIS` tab and set your connection properties. Then click `Load IRIS specifcation` and the specifcation will be loaded into the Swagger Editor.
+1. Open the dropdown menu _**IRIS**_ in the top bar.
+2. Click on _**Connect...**_.
 
-> Tip: You can also leave the Webapplication empty to list all available Webapplications for the given namespace or when you leave the Webapplication and Namespace empty all available Webapplications for all available Namespaces will be listed.
+If an connection could not be established a message will be shown.
+
+> The background color of the _Connect_ button indicates the connection status.
 
 ---
 
-## Update a IRIS REST API Specifcation
+## Create a new IRIS REST API
 
-You can update a IRIS REST API specifcation directly from your IRIS instance. Go to the `IRIS` tab and set your connection properties. Then click `Update IRIS specifcation` and the specifcation will be uploaded to your IRIS instance.
+After connecting successfully to your IRIS instance you can create a new REST API. Choose _**Create New...**_ from the dropdown menu under the _Connect_ button and fill in the Namespace and the Name of the new Webapp.
 
-> Tip: This way you also can create a new webapplication just by defining a new name in the `Webapplication` field.
+---
+
+## Load and Update a IRIS REST API Specifcation
+
+After connecting successfully to your IRIS instance you can load an existing REST API. Choose the Webapp from the dropdown menu under the _Connect_ button and click on _**Load IRIS specification**_. After the specification is loaded you can edit it and save it back to IRIS by clicking on _**Update IRIS specification**_.
+
 ---
 
 ## Export
