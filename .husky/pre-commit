@@ -3,8 +3,6 @@
 
 echo "Husky pre-commit hook"
 
-if [ !npm run build ]; then
-  echo "Build exited with code 1"
-fi
+#npm run build
 
 git add .
