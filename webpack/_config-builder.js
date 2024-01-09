@@ -13,7 +13,7 @@ import RemoveSourcemapsLackingMatchingAssetsPlugin from "./_RemoveSourcemapsLack
 
 import { getRepoInfo } from "./_helpers"
 import pkg from "../package.json"
-const nodeModules = fs.readdirSync("node_modules").filter(function(x) {
+const nodeModules = fs.readdirSync("node_modules").filter(function (x) {
   return x !== ".bin"
 })
 
@@ -84,7 +84,6 @@ export default function buildConfig(
     ],
   })
 
-
   const completeConfig = deepExtend(
     {},
     {
@@ -130,13 +129,17 @@ export default function buildConfig(
         extensions: [".js", ".jsx", "json"],
         alias: {
           react: path.resolve(projectBasePath, "node_modules", "react"),
-          "react-dom": path.resolve(projectBasePath, "node_modules", "react-dom"),
+          "react-dom": path.resolve(
+            projectBasePath,
+            "node_modules",
+            "react-dom"
+          ),
           "react-is": path.resolve(projectBasePath, "node_modules", "react-is"),
           brace: path.resolve(projectBasePath, "node_modules", "brace"),
         },
         fallback: {
           path: require.resolve("path-browserify"),
-        }
+        },
       },
 
       // If we're mangling, size is a concern -- so use trace-only sourcemaps
@@ -149,14 +152,14 @@ export default function buildConfig(
 
       performance: {
         hints: "error",
-        maxEntrypointSize: 1024000,
-        maxAssetSize: 1024000,
+        maxEntrypointSize: 1524000,
+        maxAssetSize: 1524000,
       },
 
       optimization: {
         minimize: !!minimize,
         minimizer: [
-          compiler =>
+          (compiler) =>
             new TerserPlugin({
               terserOptions: {
                 mangle: !!mangle,

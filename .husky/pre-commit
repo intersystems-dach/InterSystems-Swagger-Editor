@@ -3,6 +3,6 @@
 
 echo "Husky pre-commit hook"
 
-#npm run build
+npm run build
 
 git add .
