@@ -77,6 +77,6 @@ Go to the `Edit` to load some examples.
 
 ---
 
-By [Andreas S.](https://github.com/a-schuetz) & [Philipp B.](https://github.com/phil1436)
+By [Andreas S.](https://github.com/a-schuetz) & [Philipp B.](https://github.com/cophilot)
 
 _This application is not supported by InterSystems Corporation. Please be notified that you use it at your own responsibility_
