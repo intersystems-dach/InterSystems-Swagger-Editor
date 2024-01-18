@@ -30,7 +30,7 @@
     "deps-check": "run-s deps-check:license deps-check:size",
     "deps-check:license": "license-checker --production --csv --out $npm_package_config_deps_check_dir/licenses.csv && license-checker --development --csv --out $npm_package_config_deps_check_dir/licenses-dev.csv",
     "deps-check:size": "webpack -p --config webpack/test_deps_size.babel.js --json | webpack-bundle-size-analyzer >| $npm_package_config_deps_check_dir/sizes.txt",
-    "dev": "webpack serve --config webpack/dev.babel.js",
+    "dev": "npm install --legacy-peer-deps && webpack serve --config webpack/dev.babel.js",
     "hot-server": "webpack serve --host 0.0.0.0 --config webpack/dev.babel.js",
     "open-static": "node -e 'require(\"open\")(\"http://localhost:3001\")'",
     "lint": "eslint --cache --ext '.js,.jsx' src test",

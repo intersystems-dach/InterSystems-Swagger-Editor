@@ -11,7 +11,8 @@ import beautifyJson from "json-beautify"
 // NOTICE: CHANGES
 import { petStoreOas2Def, petStoreOas3Def, irisMathExample, irisLibraryExample } from "../../../plugins/default-definitions"
 
-import Logo from "../assets/logo_small.svg"
+// NOTICE: CHANGES
+import Logo from "../assets/logo_isc.png"
 import { method } from "lodash"
 
 export default class Topbar extends React.Component {
@@ -24,29 +25,12 @@ export default class Topbar extends React.Component {
   webapp = localStorage.getItem("irisWebApp") || ""
   username = localStorage.getItem("irisUsername") || ""
   password = localStorage.getItem("irisPassword") || ""
+  protocol = localStorage.getItem("irisProtocol") || "http"
   connectedIRIS = localStorage.getItem("connectedIRIS") == "true" ? true : false
   webapps = []
   createNewApp = localStorage.getItem("createNewApp") == "true" ? true : false
 
   // NOTICE: CHANGES
-
-   irisPostCall = async (title, body, url, header) => {
-    await fetch(url, {
-    method: "POST",
-    body: body,
-    headers: header,
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      alert(
-        data.msg)
-    })
-    .catch((err) => {
-      alert(
-        "Error: " +
-        err.message)
-    })
-    }
 
   constructor(props, context) {
     super(props, context)
@@ -129,11 +113,25 @@ export default class Topbar extends React.Component {
       return
     }
     let json = this.getAsJson()
-    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + this.namespace + "/" + this.webapp
+    let url = this.protocol + "://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + this.namespace + "/" + this.webapp
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
     header.append("Content-type", "application/json; charset=UTF-8")
-    this.irisPostCall("", json, url, header)
+    fetch(url, {
+    method: "POST",
+    body: json,
+    headers: header,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      alert(
+        data.msg)
+    })
+    .catch((err) => {
+      alert(
+        "Error: " +
+        err.message)
+    })
 
   }
 
@@ -146,7 +144,7 @@ export default class Topbar extends React.Component {
       this.listIRISWebapps()
       return
     }
-    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + this.namespace + "/" + this.webapp
+    let url = this.protocol + "://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + this.namespace + "/" + this.webapp
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
     header.append("Content-type", "application/json; charset=UTF-8")
@@ -176,13 +174,13 @@ export default class Topbar extends React.Component {
 
   }
 
-  connectToIris = () => {
+  connectToIris = (event,secondAttempt = 0) => {
     if(this.host == "" || this.port == ""){
       alert("Please fill out host and port")
       return
     }
 
-    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/"
+    let url = this.protocol + "://" + this.host + ":" + this.port + "/api/mgmnt/v2/"
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
     header.append("Content-type", "application/json; charset=UTF-8")
@@ -216,6 +214,7 @@ export default class Topbar extends React.Component {
       })
       this.connectedIRIS = true
       localStorage.setItem("connectedIRIS", true)
+      localStorage.setItem("irisProtocol", this.protocol)
       if(this.webapp == ""){
         this.createNewApp = true
         localStorage.setItem("createNewApp", true)
@@ -223,20 +222,27 @@ export default class Topbar extends React.Component {
       this.setState({})
     })
     .catch((err) => {
+      if(secondAttempt == 0){
+        this.protocol = this.protocol == "http" ? "https" : "http"
+        console.log("switching to  " + this.protocol)
+        this.connectToIris(1)
+        return
+      }
       alert(
         "Error getting webapps: " +
-        err.message)
-        this.connectedIRIS = false
-        localStorage.setItem("connectedIRIS", false)
-        this.webapps = []
-        this.setState({})
+        err.message
+      )
+      this.connectedIRIS = false
+      localStorage.setItem("connectedIRIS", false)
+      this.webapps = []
+      this.setState({})
     })
 
 
   }
 
-   istIRISWebapps = () => {
-    let url = "http://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + (this.namespace === "" ? "":this.namespace + "/")
+   listIRISWebapps = () => {
+    let url = this.protocol + "://" + this.host + ":" + this.port + "/api/mgmnt/v2/" + (this.namespace === "" ? "":this.namespace + "/")
     let header = new Headers()
     header.append("Authorization", "Basic " + btoa(this.username+ ":" + this.password))
     header.append("Content-type", "application/json; charset=UTF-8")

@@ -1,7 +1,7 @@
 <div align="center">
   <br />
-  <img src="src/standalone/topbar/assets/logo_small.svg" alt="InterSystemsSwaggerEditor"
-  width="40%"
+  <img src="src/standalone/topbar/assets/logo_isc.png" alt="InterSystemsSwaggerEditor"
+  width="60%"
   />
   <h1>InterSystems Swagger Editor</h1>
   <p>
