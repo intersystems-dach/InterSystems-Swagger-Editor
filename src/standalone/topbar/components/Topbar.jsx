@@ -25,7 +25,7 @@ export default class Topbar extends React.Component {
   webapp = localStorage.getItem("irisWebApp") || ""
   username = localStorage.getItem("irisUsername") || ""
   password = localStorage.getItem("irisPassword") || ""
-  protocol = localStorage.getItem("irisProtocol") || "http"
+  protocol = localStorage.getItem("irisProtocol") || "https"
   connectedIRIS = localStorage.getItem("connectedIRIS") == "true" ? true : false
   webapps = []
   createNewApp = localStorage.getItem("createNewApp") == "true" ? true : false
@@ -777,6 +777,28 @@ export class ${title.replace(/\s/g,"")}Service {
             </DropdownMenu> : null }
             {AboutMenu && <AboutMenu {...makeMenuOptions("About")} />}
             <DropdownMenu {...makeMenuOptionsWithoutAutomaticClose("IRIS")}>
+              <div style={
+                {
+                  cursor: "pointer",
+                  border: "none",
+                  borderBottom: "1px solid #00b6b0",
+                  paddingBottom: "5px",
+                  paddingTop: "5px",
+                  paddingLeft: "5px",
+                }}
+                onClick={
+                  () => {
+                    this.protocol = this.protocol == "http" ? "https" : "http"
+                  }
+                }
+                >
+
+                <i>
+                {
+                  this.protocol
+                }
+                </i>
+              </div>
               <label style={this.labelStyle}>
                 Host
               </label>
