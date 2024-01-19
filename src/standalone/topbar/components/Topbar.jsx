@@ -26,7 +26,8 @@ export default class Topbar extends React.Component {
   username = localStorage.getItem("irisUsername") || ""
   password = localStorage.getItem("irisPassword") || ""
   protocol = localStorage.getItem("irisProtocol") || "https"
-  connectedIRIS = localStorage.getItem("connectedIRIS") == "true" ? true : false
+  //connectedIRIS = localStorage.getItem("connectedIRIS") == "true" ? true : false
+  connectedIRIS = false
   webapps = []
   createNewApp = localStorage.getItem("createNewApp") == "true" ? true : false
 
@@ -174,7 +175,7 @@ export default class Topbar extends React.Component {
 
   }
 
-  connectToIris = (event,secondAttempt = 0) => {
+  connectToIris = (event,quietly,secondAttempt = 0) => {
     if(this.host == "" || this.port == ""){
       alert("Please fill out host and port")
       return
@@ -225,13 +226,15 @@ export default class Topbar extends React.Component {
       if(secondAttempt == 0){
         this.protocol = this.protocol == "http" ? "https" : "http"
         console.log("switching to  " + this.protocol)
-        this.connectToIris(1)
+        this.connectToIris(null,quietly,1)
         return
       }
-      alert(
-        "Error getting webapps: " +
-        err.message
-      )
+      if (!quietly){
+        alert(
+          "Error getting webapps: " +
+          err.message
+          )
+        }
       this.connectedIRIS = false
       localStorage.setItem("connectedIRIS", false)
       this.webapps = []
@@ -567,9 +570,7 @@ export default class Topbar extends React.Component {
 
   componentDidMount() {
     this.instantiateGeneratorClient()
-    if(this.connectedIRIS){
-      this.connectToIris()
-    }
+    this.connectToIris(null, true)
   }
 
   componentDidUpdate() {
@@ -856,7 +857,7 @@ export class ${title.replace(/\s/g,"")}Service {
                       <button type="button" className="iris-btn" onClick={ () =>{
                         this.updateIRISSpec()
                         this.setCreateNewApp(false)
-                        this.connectToIris()
+                        this.connectToIris(null, false)
                       }}
                       >Create new Webapp</button>
                     </>
